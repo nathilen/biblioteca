@@ -1,8 +1,9 @@
 package com.twu29.biblioteca;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,9 +23,10 @@ public class Library {
 
     private List<Book> books;
 
-    public Library(PrintStream outputStream) {
+    public Library(PrintStream outputStream, InputStream inputStream) {
         this.outputStream = outputStream;
-        books = new LinkedList<Book>();
+        this.inputStream = inputStream;
+        books = new ArrayList<Book>();
     }
 
     public void printWelcome() {
@@ -96,7 +98,7 @@ public class Library {
         outputStream.println(USER_DETAILS_MESSAGE);
     }
 
-    public void run(InputStream in){
+    public void run(){
         setInputStream(System.in);
         populateBookCatalogue();
 
@@ -125,6 +127,6 @@ public class Library {
     }
 
     public static void main(String[] args) {
-        new Library(System.out).run(System.in);
+        new Library(System.out, System.in).run();
     }
 }

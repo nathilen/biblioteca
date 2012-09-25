@@ -3,10 +3,7 @@ package com.twu29.biblioteca;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -22,8 +19,11 @@ public class TestLibrary {
 
     @Before
     public void setUp() throws Exception {
+        setUp("");
+    }
+    public void setUp(String input) throws Exception {
         outStream = new ByteArrayOutputStream();
-        library = new Library(new PrintStream(outStream));
+        library = new Library(new PrintStream(outStream),new ByteArrayInputStream(input.getBytes()));
         lineSeparator = System.getProperty("line.separator");
 
         books = new Book[4];
@@ -51,8 +51,9 @@ public class TestLibrary {
 
     @Test
     public void testShouldAllowUserToSelectMenuOption() throws Exception {
-        library.setInputStream(new ByteArrayInputStream("2".getBytes()));
-        assertEquals(2, library.getUserSelection());
+        int input = 2;
+        setUp("2");
+        assertEquals(input, library.getUserSelection());
     }
 
     @Test
