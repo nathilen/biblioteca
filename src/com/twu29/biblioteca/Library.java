@@ -1,6 +1,5 @@
 package com.twu29.biblioteca;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -11,15 +10,15 @@ public class Library {
     private PrintStream outputStream;
     private InputStream inputStream;
 
-    static final String INVALID_MENU_OPTION = "Select a valid option!!\n\n\n";
-    static final String WELCOME =  "\n----------------------------------------------------\n" +
+    static final String INVALID_MENU_OPTION = "Select a valid option!!!";
+    static final String WELCOME =  "----------------------------------------------------\n" +
                                    "|  Welcome To The Bangalore Public Library System   |\n"+
-                                   "----------------------------------------------------\n";
+                                   "----------------------------------------------------";
     static final String MENU_OPTIONS [] = {"List Book Catalog","Check Out Book","Check My Details"};
     static final String MENU = menu();
-    static final String RESERVED_AVAILABLE_BOOK = "Thank You! Enjoy the book.\n\n\n";
-    static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.\n\n\n";
-    static final String USER_DETAILS_MESSAGE = "Please talk to Librarian. Thank you.\n\n\n";
+    static final String RESERVED_AVAILABLE_BOOK = "Thank You! Enjoy the book.";
+    static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.";
+    static final String USER_DETAILS_MESSAGE = "Please talk to Librarian. Thank you.";
 
     private List<Book> books;
 
@@ -31,6 +30,7 @@ public class Library {
 
     public void printWelcome() {
         outputStream.println(WELCOME);
+        outputStream.println();
     }
 
     public void processMenuSelection() {
@@ -53,10 +53,6 @@ public class Library {
         }
     }
 
-    public void setInputStream(InputStream inputStream){
-        this.inputStream = inputStream;
-    }
-
     public void printMenu() {
         outputStream.println(menu());
     }
@@ -77,7 +73,7 @@ public class Library {
     }
 
     public void printBookMenu(){
-        String bookMenu = "Our Books\n------------\n";
+        String bookMenu = "\n\nOur Books\n------------\n";
         int bookNumber = 1;
         for (Book book: books){
             bookMenu += bookNumber++ + ". " + book.toString()+ "\n";
@@ -99,7 +95,6 @@ public class Library {
     }
 
     public void run(){
-        setInputStream(System.in);
         populateBookCatalogue();
 
         while(true){
@@ -110,10 +105,10 @@ public class Library {
     }
 
     private void populateBookCatalogue() {
-        addBook(new Book("Test Driven Development By Example", "Kent Beck"));
-        addBook(new Book("Floyd Electronic", "Floyd"));
-        addBook(new Book("How To Dance 101", "Anonymous Famous"));
-        addBook(new Book("Lessons of Here", "Anonymous Famous"));
+        addBook(new Book("Test Driven Development By Example","Kent Beck"));
+        addBook(new Book("Floyd Electronic","Floyd"));
+        addBook(new Book("How To Dance 101","Anonymous Famous"));
+        addBook(new Book("Lessons of Here","Anonymous Famous"));
     }
 
     private static String menu(){

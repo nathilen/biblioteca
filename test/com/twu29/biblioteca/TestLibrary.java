@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -15,89 +16,81 @@ public class TestLibrary {
     private Library library;
     private String lineSeparator;
 
-    private Book [] books;
+    private List<Book> books;
 
     @Before
     public void setUp() throws Exception {
         setUp("");
     }
+
     public void setUp(String input) throws Exception {
         outStream = new ByteArrayOutputStream();
         library = new Library(new PrintStream(outStream),new ByteArrayInputStream(input.getBytes()));
         lineSeparator = System.getProperty("line.separator");
 
-        books = new Book[4];
-        books[0] = new Book("Test Driven Development By Example", "Kent Beck");
-        books[1] = new Book("Floyd Electronic", "Floyd");
-        books[2] = new Book("How To Dance 101", "Anonymous Famous");
-        books[3] = new Book("Lessons of Here", "Anonymous Famous");
-
-        for (Book book: books){
-            library.addBook(book);
-        }
+        library.addBook(new Book("Test Driven Development By Example","Kent Beck"));
+        library.addBook(new Book("How To Dance 101","Anonymous Famous"));
     }
 
     @Test
-    public void testShouldPrintWelcome() throws Exception {
+    public void shouldPrintWelcome() throws Exception {
         library.printWelcome();
-        assertThat(outStream.toString(), is(formattedOutput(Library.WELCOME)));
+        assertThat(outStream.toString(), is(formattedOutput(Library.WELCOME + "\n")));
     }
 
     @Test
-    public void testShouldPrintMenu() throws Exception {
+    public void shouldPrintMenu() throws Exception {
         library.printMenu();
         assertThat(outStream.toString(), is(formattedOutput(Library.MENU)));
     }
 
     @Test
-    public void testShouldAllowUserToSelectMenuOption() throws Exception {
+    public void shouldAllowUserToSelectMenuOption() throws Exception {
         int input = 2;
         setUp("2");
         assertEquals(input, library.getUserSelection());
     }
 
     @Test
-    public void testShouldUserSelectionBeNumeric () throws Exception {
-        library.setInputStream(new ByteArrayInputStream("two".getBytes()));
+    public void shouldUserSelectionBeNumeric () throws Exception {
+        setUp("two");
         assertNotSame(2, library.getUserSelection());
     }
 
     @Test
-    public void testShouldBeNotifiedOfInvalidMenuOption() throws Exception {
-        library.setInputStream(new ByteArrayInputStream("6".getBytes()));
+    public void shouldBeNotifiedOfInvalidMenuOption() throws Exception {
+        setUp("6");
         library.processMenuSelection();
         assertThat(outStream.toString(), is(formattedOutput(Library.INVALID_MENU_OPTION)) );
     }
 
     @Test
-    public void testShouldSeeAllBooks() throws Exception {
-        String bookMenu = "Our Books\n------------\n";
-        int bookNumber = 1;
-        for (Book book: books){
-            bookMenu += bookNumber++ + ". " + book.toString() + "\n";
-        }
+    public void shouldSeeAllBooks() throws Exception {
+        String bookMenu = "\n\nOur Books\n------------\n" +
+                          "1. Test Driven Development By Example by Kent Beck\n" +
+                          "2. How To Dance 101 by Anonymous Famous\n";
         library.printBookMenu();
         assertThat(outStream.toString(), is(formattedOutput(bookMenu)));
     }
 
     @Test
-    public void testShouldReserveAvailableBook() throws Exception {
+    public void shouldReserveAvailableBook() throws Exception {
         String firstBookOnMenu = "1";
-        library.setInputStream(new ByteArrayInputStream(firstBookOnMenu.getBytes()));
+        setUp(firstBookOnMenu);
         library.reserveBook();
         assertThat(outStream.toString(),is(formattedOutput(Library.RESERVED_AVAILABLE_BOOK)));
     }
 
     @Test
-    public void testShouldNotReserveUnavailableBook() throws Exception {
+    public void shouldNotReserveBookNotInMenu() throws Exception {
         String bookNotInMenu = "5";
-        library.setInputStream(new ByteArrayInputStream(bookNotInMenu.getBytes()));
+        setUp(bookNotInMenu);
         library.reserveBook();
         assertThat(outStream.toString(),is(formattedOutput(Library.RESERVED_UNAVAILABLE_BOOK)));
     }
 
     @Test
-    public void testShouldBeAbleToCheckUserDetails() throws Exception {
+    public void shouldBeAbleToCheckUserDetails() throws Exception {
         library.checkUser();
         assertThat(outStream.toString(),is(formattedOutput(Library.USER_DETAILS_MESSAGE)));
 
