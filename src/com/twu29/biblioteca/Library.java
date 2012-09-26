@@ -1,6 +1,5 @@
 package com.twu29.biblioteca;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.Scanner;
 
 public class Library {
     private PrintStream outputStream;
-    private InputStream inputStream;
+    private Scanner scanner;
 
     static final String INVALID_MENU_OPTION = "Select a valid option!!!";
     static final String WELCOME =  "----------------------------------------------------\n" +
@@ -22,9 +21,9 @@ public class Library {
 
     private List<Book> books;
 
-    public Library(PrintStream outputStream, InputStream inputStream) {
+    public Library(PrintStream outputStream, Scanner scanner) {
         this.outputStream = outputStream;
-        this.inputStream = inputStream;
+        this.scanner = scanner;
         books = new ArrayList<Book>();
     }
 
@@ -59,7 +58,6 @@ public class Library {
 
     public int getUserSelection(){
         try{
-            Scanner scanner = new Scanner(inputStream);
             return scanner.nextInt();
         }
         catch(Exception exception){
@@ -83,8 +81,15 @@ public class Library {
 
     public void reserveBook() {
         try{
-            books.get(getUserSelection());
-            outputStream.println(RESERVED_AVAILABLE_BOOK);
+            Book book = books.get(getUserSelection() - 1);
+            if (!book.isReserved()){
+                book.setReserved(true);
+                outputStream.println(RESERVED_AVAILABLE_BOOK);
+            }
+            else{
+                outputStream.println(RESERVED_UNAVAILABLE_BOOK);
+            }
+
         } catch (Exception exception){
             outputStream.println(RESERVED_UNAVAILABLE_BOOK);
         }
@@ -94,7 +99,7 @@ public class Library {
         outputStream.println(USER_DETAILS_MESSAGE);
     }
 
-    public void run(){
+    public void run() {
         populateBookCatalogue();
 
         while(true){
@@ -105,10 +110,10 @@ public class Library {
     }
 
     private void populateBookCatalogue() {
-        addBook(new Book("Test Driven Development By Example","Kent Beck"));
-        addBook(new Book("Floyd Electronic","Floyd"));
-        addBook(new Book("How To Dance 101","Anonymous Famous"));
-        addBook(new Book("Lessons of Here","Anonymous Famous"));
+        addBook(new Book("Test Driven Development By Example","Kent Beck", false));
+        addBook(new Book("Floyd Electronic","Floyd", false));
+        addBook(new Book("How To Dance 101","Anonymous Famous", false));
+        addBook(new Book("Lessons of Here","Anonymous Famous", false));
     }
 
     private static String menu(){
@@ -122,6 +127,7 @@ public class Library {
     }
 
     public static void main(String[] args) {
-        new Library(System.out, System.in).run();
+        Scanner inputScanner = new Scanner(System.in);
+        new Library(System.out, inputScanner).run();
     }
 }

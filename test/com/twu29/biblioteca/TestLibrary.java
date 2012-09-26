@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-import java.util.List;
+import java.util.Scanner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -15,8 +15,7 @@ public class TestLibrary {
     private OutputStream outStream;
     private Library library;
     private String lineSeparator;
-
-    private List<Book> books;
+    private ByteArrayInputStream inputStream;
 
     @Before
     public void setUp() throws Exception {
@@ -25,11 +24,13 @@ public class TestLibrary {
 
     public void setUp(String input) throws Exception {
         outStream = new ByteArrayOutputStream();
-        library = new Library(new PrintStream(outStream),new ByteArrayInputStream(input.getBytes()));
+        inputStream = new ByteArrayInputStream(input.getBytes());
+
+        library = new Library(new PrintStream(outStream), new Scanner(inputStream));
         lineSeparator = System.getProperty("line.separator");
 
-        library.addBook(new Book("Test Driven Development By Example","Kent Beck"));
-        library.addBook(new Book("How To Dance 101","Anonymous Famous"));
+        library.addBook(new Book("Test Driven Development By Example","Kent Beck",false));
+        library.addBook(new Book("How To Dance 101","Anonymous Famous",false));
     }
 
     @Test
@@ -82,6 +83,19 @@ public class TestLibrary {
     }
 
     @Test
+    public void shouldNotReserveUnavailableBook() throws Exception {
+        String bookInMenu = "2 2";
+        String bookAvailableText = formattedOutput(Library.RESERVED_AVAILABLE_BOOK);
+        String bookUnavailableText = formattedOutput(Library.RESERVED_UNAVAILABLE_BOOK);
+
+        setUp(bookInMenu);
+
+        library.reserveBook();
+        library.reserveBook();
+        assertThat(outStream.toString(),is(bookAvailableText + bookUnavailableText));
+    }
+
+    @Test
     public void shouldNotReserveBookNotInMenu() throws Exception {
         String bookNotInMenu = "5";
         setUp(bookNotInMenu);
@@ -99,5 +113,4 @@ public class TestLibrary {
     private String formattedOutput(String output) {
         return output + lineSeparator;
     }
-
 }
