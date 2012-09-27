@@ -29,8 +29,8 @@ public class TestLibrary {
         library = new Library(new PrintStream(outStream), new Scanner(inputStream));
         lineSeparator = System.getProperty("line.separator");
 
-        library.addBook(new Book("Test Driven Development By Example","Kent Beck",false));
-        library.addBook(new Book("How To Dance 101","Anonymous Famous",false));
+        library.addBook(1,new Book("Test Driven Development By Example","Kent Beck",false));
+        library.addBook(2,new Book("How To Dance 101","Anonymous Famous",false));
     }
 
     @Test
