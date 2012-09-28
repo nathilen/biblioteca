@@ -33,7 +33,7 @@ public class TestLibrary {
         library.addBook(2, new Book("How To Dance 101","Anonymous Famous",false));
 
         library.addMovie(1, new Movie("Scholay", 1975, "Ramesh Sippy"));
-        library.addMovie(2, new Movie("La Maison", 2011, "Krystel Elembe", 3));
+        library.addMovie(2, new Movie("La Maison", 2011, "Krystel Elembe", "3"));
     }
 
     @Test
@@ -115,10 +115,12 @@ public class TestLibrary {
 
     @Test
     public void shouldSeeAllMovies() throws Exception {
-        String movieMenu = "\n\nOur Movies\n------------\n" +
-                           "Movie\tYear\tDirector\tRating\n" +
-                           "Scholay\t1975\tRamesh Sippy\tN/A\n" +
-                           "La Maison\t2011\tKrystel Elembe\t3\n";
+        String lineFormat = "%-20s%-10d%-20s%-3s\n";
+        String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n";
+        String movieMenu = String.format(headerFormat,"Our Movies",
+                            "------------","Movie","Year","Director","Rating") +
+                            String.format(lineFormat, "Scholay", 1975, "Ramesh Sippy", "N/A") +
+                            String.format(lineFormat, "La Maison", 2011, "Krystel Elembe", "3");
 
         library.printMovies();
         assertThat(outStream.toString(), is(formattedOutput(movieMenu)));

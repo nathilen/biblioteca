@@ -1,5 +1,8 @@
 package com.twu29.biblioteca;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -11,7 +14,7 @@ public class Library {
     static final String WELCOME =  "----------------------------------------------------\n" +
                                    "|  Welcome To The Bangalore Public Library System   |\n"+
                                    "----------------------------------------------------";
-    static final String MENU_OPTIONS [] = {"List Book Catalog","Check Out Book","Check My Details","Exit"};
+    static final String MENU_OPTIONS [] = {"List Movie Catalog","List Book Catalog","Check Out Book","Check My Details","Exit"};
     static final String MENU = menu();
     static final String RESERVED_AVAILABLE_BOOK = "Thank You! Enjoy the book.";
     static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.";
@@ -24,6 +27,7 @@ public class Library {
     public Library(PrintStream outputStream, Scanner scanner) {
         this.outputStream = outputStream;
         this.scanner = scanner;
+
         books = new Hashtable<Integer, Book>();
         movies = new Hashtable<Integer, Movie>();
         menus = new ArrayList<Menu>();
@@ -35,15 +39,17 @@ public class Library {
     }
 
     public void processMenuSelection(int selection) {
-
         switch(selection){
             case 1:
-                printBooks();
+                printMovies();
                 break;
             case 2:
-                reserveBook();
+                printBooks();
                 break;
             case 3:
+                reserveBook();
+                break;
+            case 4:
                 checkUser();
                 break;
             default:
@@ -87,10 +93,13 @@ public class Library {
     }
 
     public void printMovies() {
-        String movieMenu = "\n\nOur Movies\n------------\n" +
-                "Movie\tYear\tDirector\tRating\n";
+        String lineFormat = "%-20s%-10d%-20s%-3s\n";
+        String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n";
+        String movieMenu = String.format(headerFormat,"Our Movies",
+                                    "------------","Movie","Year","Director","Rating");
+
         for(int movieNumber = 1; movieNumber <= movies.size(); movieNumber++){
-            movieMenu += movies.get(movieNumber).toString() + "\n";
+            movieMenu += movies.get(movieNumber).movieLine(lineFormat);
         }
         outputStream.println(movieMenu);
     }
@@ -117,6 +126,7 @@ public class Library {
 
     public void run() {
         populateBookCatalogue();
+        populateMovieCatalogue();
 
         while(true){
             printWelcome();
@@ -124,6 +134,28 @@ public class Library {
             int selection = getUserSelection();
             processMenuSelection(selection);
         }
+    }
+
+    private void populateMovieCatalogue() {
+        final String MOVIE_FILENAME = System.getProperty("user.dir") + "/files/movies.txt";
+        String movieLine;
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(MOVIE_FILENAME));
+            int movieNumber = 0;
+            while ((movieLine = reader.readLine()) != null){
+                String movieFields [] = movieLine.split(";");
+                String title = movieFields[0];
+                int year = Integer.parseInt(movieFields[1]);
+                String director = movieFields[2];
+                String rating = movieFields[3];
+                addMovie(++movieNumber,new Movie(title, year, director, rating));
+            }
+            reader.close();
+        }
+        catch (IOException exception){
+            //ignore for now
+        }
+
     }
 
     private void populateBookCatalogue() {
