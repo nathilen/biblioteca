@@ -1,10 +1,7 @@
 package com.twu29.biblioteca;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Library {
     private PrintStream outputStream;
@@ -20,12 +17,16 @@ public class Library {
     static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.";
     static final String USER_DETAILS_MESSAGE = "Please talk to Librarian. Thank you.";
 
-    private HashMap<Integer,Book> books;
+    private Hashtable<Integer,Book> books;
+    private Hashtable<Integer, Movie> movies;
+    private ArrayList<Menu> menus;
 
     public Library(PrintStream outputStream, Scanner scanner) {
         this.outputStream = outputStream;
         this.scanner = scanner;
-        books = new HashMap<Integer, Book>();
+        books = new Hashtable<Integer, Book>();
+        movies = new Hashtable<Integer, Movie>();
+        menus = new ArrayList<Menu>();
     }
 
     public void printWelcome() {
@@ -33,12 +34,11 @@ public class Library {
         outputStream.println();
     }
 
-    public void processMenuSelection() {
-        int selection = getUserSelection();
+    public void processMenuSelection(int selection) {
 
         switch(selection){
             case 1:
-                printBookMenu();
+                printBooks();
                 break;
             case 2:
                 reserveBook();
@@ -47,8 +47,12 @@ public class Library {
                 checkUser();
                 break;
             default:
-                outputStream.println(INVALID_MENU_OPTION);
+                printInvalidOption();
         }
+    }
+
+    public void printInvalidOption() {
+        outputStream.println(INVALID_MENU_OPTION);
     }
 
     public void printMenu() {
@@ -66,16 +70,29 @@ public class Library {
     }
 
     public void addBook(int bookNumber, Book book){
-        books.put(bookNumber,book);
+        books.put(bookNumber, book);
     }
 
-    public void printBookMenu(){
+    public void addMovie(int movieNumber, Movie movie) {
+        movies.put(movieNumber, movie);
+    }
+
+    public void printBooks(){
         String bookMenu = "\n\nOur Books\n------------\n";
-        int bookNumber = 1;
+        int bookNumber = 0;
         for (Book book: books.values()){
-            bookMenu += bookNumber++ + ". " + book.toString()+ "\n";
+            bookMenu += ++bookNumber + ". " + books.get(bookNumber)+ "\n";
         }
         outputStream.println(bookMenu);
+    }
+
+    public void printMovies() {
+        String movieMenu = "\n\nOur Movies\n------------\n" +
+                "Movie\tYear\tDirector\tRating\n";
+        for(int movieNumber = 1; movieNumber <= movies.size(); movieNumber++){
+            movieMenu += movies.get(movieNumber).toString() + "\n";
+        }
+        outputStream.println(movieMenu);
     }
 
     public void reserveBook() {
@@ -104,7 +121,8 @@ public class Library {
         while(true){
             printWelcome();
             printMenu();
-            processMenuSelection();
+            int selection = getUserSelection();
+            processMenuSelection(selection);
         }
     }
 
@@ -129,4 +147,5 @@ public class Library {
         Scanner inputScanner = new Scanner(System.in);
         new Library(System.out, inputScanner).run();
     }
+
 }

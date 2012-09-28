@@ -11,15 +11,16 @@ public class Book {
         this.reserved = reserved;
     }
 
-    public String toString(){
-        return title + " by " + author;
-    }
-
     public boolean isReserved() {
         return reserved;
     }
 
     public void setReserved(boolean reserved) {
         this.reserved = reserved;
+    }
+
+    @Override
+    public String toString(){
+        return title + " by " + author;
     }
 }

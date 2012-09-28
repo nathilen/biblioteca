@@ -29,8 +29,11 @@ public class TestLibrary {
         library = new Library(new PrintStream(outStream), new Scanner(inputStream));
         lineSeparator = System.getProperty("line.separator");
 
-        library.addBook(1,new Book("Test Driven Development By Example","Kent Beck",false));
-        library.addBook(2,new Book("How To Dance 101","Anonymous Famous",false));
+        library.addBook(1, new Book("Test Driven Development By Example","Kent Beck",false));
+        library.addBook(2, new Book("How To Dance 101","Anonymous Famous",false));
+
+        library.addMovie(1, new Movie("Scholay", 1975, "Ramesh Sippy"));
+        library.addMovie(2, new Movie("La Maison", 2011, "Krystel Elembe", 3));
     }
 
     @Test
@@ -61,7 +64,7 @@ public class TestLibrary {
     @Test
     public void shouldBeNotifiedOfInvalidMenuOption() throws Exception {
         setUp("6");
-        library.processMenuSelection();
+        library.processMenuSelection(6);
         assertThat(outStream.toString(), is(formattedOutput(Library.INVALID_MENU_OPTION)) );
     }
 
@@ -70,7 +73,7 @@ public class TestLibrary {
         String bookMenu = "\n\nOur Books\n------------\n" +
                           "1. Test Driven Development By Example by Kent Beck\n" +
                           "2. How To Dance 101 by Anonymous Famous\n";
-        library.printBookMenu();
+        library.printBooks();
         assertThat(outStream.toString(), is(formattedOutput(bookMenu)));
     }
 
@@ -108,6 +111,17 @@ public class TestLibrary {
         library.checkUser();
         assertThat(outStream.toString(),is(formattedOutput(Library.USER_DETAILS_MESSAGE)));
 
+    }
+
+    @Test
+    public void shouldSeeAllMovies() throws Exception {
+        String movieMenu = "\n\nOur Movies\n------------\n" +
+                           "Movie\tYear\tDirector\tRating\n" +
+                           "Scholay\t1975\tRamesh Sippy\tN/A\n" +
+                           "La Maison\t2011\tKrystel Elembe\t3\n";
+
+        library.printMovies();
+        assertThat(outStream.toString(), is(formattedOutput(movieMenu)));
     }
 
     private String formattedOutput(String output) {
