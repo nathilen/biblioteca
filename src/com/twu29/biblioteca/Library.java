@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Scanner;
 
 public class Library {
     private PrintStream outputStream;
@@ -94,7 +96,7 @@ public class Library {
 
     public void printMovies() {
         String lineFormat = "%-20s%-10d%-20s%-3s\n";
-        String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n";
+        String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n\n";
         String movieMenu = String.format(headerFormat,"Our Movies",
                                     "------------","Movie","Year","Director","Rating");
 
@@ -125,8 +127,8 @@ public class Library {
     }
 
     public void run() {
-        populateBookCatalogue();
         populateMovieCatalogue();
+        populateBookCatalogue();
 
         while(true){
             printWelcome();
@@ -137,7 +139,10 @@ public class Library {
     }
 
     private void populateMovieCatalogue() {
-        final String MOVIE_FILENAME = System.getProperty("user.dir") + "/files/movies.txt";
+        String fileSeparator = System.getProperty("file.separator");
+        String userDirectory = System.getProperty("user.dir");
+        final String MOVIE_FILENAME = userDirectory + fileSeparator +
+                                      "files" + fileSeparator + "movies.txt";
         String movieLine;
         try{
             BufferedReader reader = new BufferedReader(new FileReader(MOVIE_FILENAME));
@@ -147,8 +152,7 @@ public class Library {
                 String title = movieFields[0];
                 int year = Integer.parseInt(movieFields[1]);
                 String director = movieFields[2];
-                String rating = movieFields[3];
-                addMovie(++movieNumber,new Movie(title, year, director, rating));
+                addMovie(++movieNumber,new Movie(title, year, director));
             }
             reader.close();
         }
@@ -179,5 +183,4 @@ public class Library {
         Scanner inputScanner = new Scanner(System.in);
         new Library(System.out, inputScanner).run();
     }
-
 }
