@@ -3,7 +3,6 @@ package com.twu29.biblioteca;
 import junit.framework.JUnit4TestAdapter;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({TestUser.class, TestMovie.class, TestLibrary.class})

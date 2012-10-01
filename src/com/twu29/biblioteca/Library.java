@@ -16,15 +16,17 @@ public class Library {
     static final String WELCOME =  "----------------------------------------------------\n" +
                                    "|  Welcome To The Bangalore Public Library System   |\n"+
                                    "----------------------------------------------------";
-    static final String MENU_OPTIONS [] = {"List Movie Catalog","List Book Catalog","Check Out Book","Check My Details","Exit"};
+    static final String MENU_OPTIONS [] = {"Login","List Book Catalog","List Movie Catalog","Check Out Book","Check My Details","Exit"};
     static final String MENU = menu();
     static final String RESERVED_AVAILABLE_BOOK = "Thank You! Enjoy the book.";
     static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.";
-    static final String USER_DETAILS_MESSAGE = "Please talk to Librarian. Thank you.";
+    static final String GENERIC_USER_MESSAGE = "Please talk to Librarian. Thank you.";
 
     private Hashtable<Integer,Book> books;
     private Hashtable<Integer, Movie> movies;
     private ArrayList<Menu> menus;
+
+    private User loggedInUser;
 
     public Library(PrintStream outputStream, Scanner scanner) {
         this.outputStream = outputStream;
@@ -43,20 +45,32 @@ public class Library {
     public void processMenuSelection(int selection) {
         switch(selection){
             case 1:
-                printMovies();
+                doLogin();
                 break;
             case 2:
                 printBooks();
                 break;
             case 3:
-                reserveBook();
+                printMovies();
                 break;
             case 4:
+                reserveBook();
+                break;
+            case 5:
                 checkUser();
                 break;
             default:
                 printInvalidOption();
         }
+    }
+
+    public void doLogin() {
+        String username = scanner.next();
+        String password = scanner.next();
+        User user = new User(username,password);
+        user.login();
+        loggedInUser = user;
+        outputStream.println("User successfully logged in");
     }
 
     public void printInvalidOption() {
@@ -123,7 +137,12 @@ public class Library {
     }
 
     public void checkUser() {
-        outputStream.println(USER_DETAILS_MESSAGE);
+        if (loggedInUser != null){
+            outputStream.println("Hi " + loggedInUser.getUsername() + "!");
+        }
+        else{
+            outputStream.println(GENERIC_USER_MESSAGE);
+        }
     }
 
     public void run() {

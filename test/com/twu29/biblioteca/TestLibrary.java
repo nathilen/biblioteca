@@ -10,7 +10,9 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
+import static org.junit.internal.matchers.StringContains.containsString;
 
 
 public class TestLibrary {
@@ -78,6 +80,36 @@ public class TestLibrary {
     }
 
     @Test
+    public void shouldSeeAllMovies() throws Exception {
+
+        library.addMovie(1, new Movie("Scholay", 2012, "Ramesh Sippy"));
+        library.addMovie(2, new Movie("La Maison", 2011, "Krystel Elembe"));
+
+        String lineFormat = "%-20s%-10d%-20s%-3s\n";
+        String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n\n";
+        String movieMenu = String.format(headerFormat,"Our Movies",
+                "------------","Movie","Year","Director","Rating") +
+                String.format(lineFormat, "Scholay", 2012, "Ramesh Sippy", "N/A") +
+                String.format(lineFormat, "La Maison", 2011, "Krystel Elembe", "N/A");
+
+        library.printMovies();
+        assertThat(outStream.toString(), is(formattedOutput(movieMenu)));
+    }
+
+    @Test
+    public void shouldPerformLogin() throws Exception {
+        setUp("111-1111 lola1");
+        library.doLogin();
+        assertThat(outStream.toString(), is(formattedOutput("User successfully logged in")));
+    }
+
+    @Test(expected = LibraryException.class)
+    public void shouldNotAllowInvalidUserToLogin() throws Exception {
+        setUp("111-1111 lola2");
+        library.doLogin();
+    }
+
+    @Test
     public void shouldReserveAvailableBook() throws Exception {
         String firstBookOnMenu = "1";
         setUp(firstBookOnMenu);
@@ -107,27 +139,26 @@ public class TestLibrary {
     }
 
     @Test
-    public void shouldBeAbleToCheckUserDetails() throws Exception {
+    public void shouldBeAbleToCheckUserThatHasNotLoggedIn() throws Exception {
         library.checkUser();
-        assertThat(outStream.toString(),is(formattedOutput(Library.USER_DETAILS_MESSAGE)));
+        assertThat(outStream.toString(),is(formattedOutput(Library.GENERIC_USER_MESSAGE)));
 
     }
 
     @Test
-    public void shouldSeeAllMovies() throws Exception {
+    public void shouldBeAbleToCheckUserThatHasLoggedIn() throws Exception {
+        setUp("111-1112 lola2");
+        library.doLogin();
+        library.checkUser();
+        assertThat(outStream.toString(), containsString("Hi 111-1112!"));
+    }
 
-        library.addMovie(1, new Movie("Scholay", 2012, "Ramesh Sippy"));
-        library.addMovie(2, new Movie("La Maison", 2011, "Krystel Elembe"));
-
-        String lineFormat = "%-20s%-10d%-20s%-3s\n";
-        String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n\n";
-        String movieMenu = String.format(headerFormat,"Our Movies",
-                            "------------","Movie","Year","Director","Rating") +
-                            String.format(lineFormat, "Scholay", 2012, "Ramesh Sippy", "N/A") +
-                            String.format(lineFormat, "La Maison", 2011, "Krystel Elembe", "N/A");
-
-        library.printMovies();
-        assertThat(outStream.toString(), is(formattedOutput(movieMenu)));
+    @Test
+    public void shouldLoggedInUserNotSeeGenericMessage() throws Exception {
+        setUp("111-1113 lola3");
+        library.doLogin();
+        library.checkUser();
+        assertThat(outStream.toString(), is(not(containsString(Library.GENERIC_USER_MESSAGE))));
     }
 
     private String formattedOutput(String output) {
