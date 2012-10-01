@@ -130,13 +130,6 @@ public class TestLibrary {
         assertThat(outStream.toString(), is(formattedOutput(movieMenu)));
     }
 
-
-    @Test
-    public void shouldUnderstandUserLogin() throws Exception {
-        User user = new User("111-1111", "here101");
-        user.login();
-    }
-
     private String formattedOutput(String output) {
         return output + lineSeparator;
     }
