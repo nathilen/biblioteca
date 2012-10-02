@@ -1,99 +1,15 @@
 package com.twu29.biblioteca;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Hashtable;
-import java.util.Scanner;
 
 public class Library {
-    private PrintStream outputStream;
-    private Scanner scanner;
 
-    static final String INVALID_MENU_OPTION = "Select a valid option!!!";
-    static final String WELCOME =  "----------------------------------------------------\n" +
-                                   "|  Welcome To The Bangalore Public Library System   |\n"+
-                                   "----------------------------------------------------";
-    static final String MENU_OPTIONS [] = {"Login","List Book Catalog","List Movie Catalog","Check Out Book","Check My Details","Exit"};
-    static final String MENU = menu();
-    static final String RESERVED_AVAILABLE_BOOK = "Thank You! Enjoy the book.";
-    static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.";
-    static final String GENERIC_USER_MESSAGE = "Please talk to Librarian. Thank you.";
-
-    private Hashtable<Integer,Book> books;
     private Hashtable<Integer, Movie> movies;
+    private static Hashtable<Integer,Book> books;
 
-    private User loggedInUser;
-    private Menu menu;
-
-    public Library(PrintStream outputStream, Scanner scanner) {
-        this.outputStream = outputStream;
-        this.scanner = scanner;
-
+    public Library() {
         books = new Hashtable<Integer, Book>();
         movies = new Hashtable<Integer, Movie>();
-
-        menu = new Menu(this);
-    }
-
-    public void printWelcome() {
-        outputStream.println(WELCOME);
-        outputStream.println();
-    }
-
-    public void processMenuSelection(int selection) {
-//        menu.processItem(selection - 1);
-        switch(selection){
-            case 1:
-                doLogin();
-                break;
-            case 2:
-                printMessage(bookCatalogue());
-                break;
-            case 3:
-                printMessage(movieCatalogue());
-                break;
-            case 4:
-                reserveBook();
-                break;
-            case 5:
-                checkUser();
-                break;
-            default:
-                printInvalidOption();
-        }
-    }
-
-    public void doLogin() {
-        String username = scanner.next();
-        String password = scanner.next();
-        User user = new User(username,password);
-        user.login();
-        loggedInUser = user;
-        outputStream.println("User successfully logged in");
-    }
-
-    public void printInvalidOption() {
-        outputStream.println(INVALID_MENU_OPTION);
-    }
-
-    public void printMessage(String message){
-        outputStream.println(message);
-    }
-
-    public void printMenu() {
-        outputStream.println(menu());
-    }
-
-    public int getUserSelection(){
-        try{
-            return scanner.nextInt();
-        }
-        catch(Exception exception){
-            outputStream.println("Only numbers are allowed");
-        }
-        return -1;
     }
 
     public void addBook(int bookNumber, Book book){
@@ -125,86 +41,19 @@ public class Library {
         return movieMenu;
     }
 
-    public void reserveBook() {
+    public String reserveBook(int selection) {
         try{
-            Book book = books.get(getUserSelection());
+            Book book = books.get(selection);
             if (!book.isReserved()){
                 book.setReserved(true);
-                outputStream.println(RESERVED_AVAILABLE_BOOK);
+                return Biblioteca.RESERVED_AVAILABLE_BOOK;
             }
             else{
-                outputStream.println(RESERVED_UNAVAILABLE_BOOK);
+                return Biblioteca.RESERVED_UNAVAILABLE_BOOK;
             }
 
         } catch (Exception exception){
-            outputStream.println(RESERVED_UNAVAILABLE_BOOK);
+            return Biblioteca.RESERVED_UNAVAILABLE_BOOK;
         }
-    }
-
-    public void checkUser() {
-        if (loggedInUser != null){
-            outputStream.println("Hi " + loggedInUser.getUsername() + "!");
-        }
-        else{
-            outputStream.println(GENERIC_USER_MESSAGE);
-        }
-    }
-
-    public void run() {
-        populateMovieCatalogue();
-        populateBookCatalogue();
-
-        while(true){
-            printWelcome();
-            printMenu();
-            int selection = getUserSelection();
-            processMenuSelection(selection);
-        }
-    }
-
-    private void populateMovieCatalogue() {
-        String fileSeparator = System.getProperty("file.separator");
-        String userDirectory = System.getProperty("user.dir");
-        final String MOVIE_FILENAME = userDirectory + fileSeparator +
-                                      "files" + fileSeparator + "movies.txt";
-        String movieLine;
-        try{
-            BufferedReader reader = new BufferedReader(new FileReader(MOVIE_FILENAME));
-            int movieNumber = 0;
-            while ((movieLine = reader.readLine()) != null){
-                String movieFields [] = movieLine.split(";");
-                String title = movieFields[0];
-                int year = Integer.parseInt(movieFields[1]);
-                String director = movieFields[2];
-                addMovie(++movieNumber,new Movie(title, year, director));
-            }
-            reader.close();
-        }
-        catch (IOException exception){
-            //ignore for now
-        }
-
-    }
-
-    private void populateBookCatalogue() {
-        addBook(1, new Book("Test Driven Development By Example","Kent Beck", false));
-        addBook(2, new Book("Floyd Electronic","Floyd", false));
-        addBook(3, new Book("How To Dance 101","Anonymous Famous", false));
-        addBook(4, new Book("Lessons of Here","Anonymous Famous", false));
-    }
-
-    private static String menu(){
-        String menu = "Menu\n================\n";
-        int optionNumber;
-        for(optionNumber = 1; optionNumber <= MENU_OPTIONS.length; optionNumber++){
-            menu += optionNumber + ". " + MENU_OPTIONS[optionNumber - 1] + "\n";
-        }
-        menu += "Select an option: ";
-        return menu;
-    }
-
-    public static void main(String[] args) {
-        Scanner inputScanner = new Scanner(System.in);
-        new Library(System.out, inputScanner).run();
     }
 }
