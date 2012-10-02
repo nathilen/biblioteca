@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
 
@@ -24,9 +23,9 @@ public class Library {
 
     private Hashtable<Integer,Book> books;
     private Hashtable<Integer, Movie> movies;
-    private ArrayList<Menu> menus;
 
     private User loggedInUser;
+    private Menu menu;
 
     public Library(PrintStream outputStream, Scanner scanner) {
         this.outputStream = outputStream;
@@ -34,7 +33,8 @@ public class Library {
 
         books = new Hashtable<Integer, Book>();
         movies = new Hashtable<Integer, Movie>();
-        menus = new ArrayList<Menu>();
+
+        menu = new Menu(this);
     }
 
     public void printWelcome() {
@@ -43,15 +43,16 @@ public class Library {
     }
 
     public void processMenuSelection(int selection) {
+//        menu.processItem(selection - 1);
         switch(selection){
             case 1:
                 doLogin();
                 break;
             case 2:
-                printBooks();
+                printMessage(bookCatalogue());
                 break;
             case 3:
-                printMovies();
+                printMessage(movieCatalogue());
                 break;
             case 4:
                 reserveBook();
@@ -77,6 +78,10 @@ public class Library {
         outputStream.println(INVALID_MENU_OPTION);
     }
 
+    public void printMessage(String message){
+        outputStream.println(message);
+    }
+
     public void printMenu() {
         outputStream.println(menu());
     }
@@ -99,16 +104,16 @@ public class Library {
         movies.put(movieNumber, movie);
     }
 
-    public void printBooks(){
+    public String bookCatalogue(){
         String bookMenu = "\n\nOur Books\n------------\n";
         int bookNumber = 0;
         for (Book book: books.values()){
             bookMenu += ++bookNumber + ". " + books.get(bookNumber)+ "\n";
         }
-        outputStream.println(bookMenu);
+        return bookMenu;
     }
 
-    public void printMovies() {
+    public String movieCatalogue() {
         String lineFormat = "%-20s%-10d%-20s%-3s\n";
         String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n\n";
         String movieMenu = String.format(headerFormat,"Our Movies",
@@ -117,7 +122,7 @@ public class Library {
         for(int movieNumber = 1; movieNumber <= movies.size(); movieNumber++){
             movieMenu += movies.get(movieNumber).movieLine(lineFormat);
         }
-        outputStream.println(movieMenu);
+        return movieMenu;
     }
 
     public void reserveBook() {

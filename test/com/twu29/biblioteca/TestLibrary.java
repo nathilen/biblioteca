@@ -74,9 +74,8 @@ public class TestLibrary {
     public void shouldSeeAllBooks() throws Exception {
         String bookMenu = "\n\nOur Books\n------------\n" +
                           "1. Test Driven Development By Example by Kent Beck\n" +
-                          "2. How To Dance 101 by Anonymous Famous\n";
-        library.printBooks();
-        assertThat(outStream.toString(), is(formattedOutput(bookMenu)));
+                          "2. How To Dance 101 by Anonymous Famous";
+        assertThat(library.bookCatalogue(), is(formattedOutput(bookMenu)));
     }
 
     @Test
@@ -92,8 +91,7 @@ public class TestLibrary {
                 String.format(lineFormat, "Scholay", 2012, "Ramesh Sippy", "N/A") +
                 String.format(lineFormat, "La Maison", 2011, "Krystel Elembe", "N/A");
 
-        library.printMovies();
-        assertThat(outStream.toString(), is(formattedOutput(movieMenu)));
+        assertThat(library.movieCatalogue(), is(movieMenu));
     }
 
     @Test
