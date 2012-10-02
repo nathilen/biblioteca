@@ -10,7 +10,7 @@ public class Biblioteca {
     private PrintStream outputStream;
     private Scanner scanner;
 
-    private User loggedInUser;
+    public static User loggedInUser;
     private Menu menu;
     private Library library;
 
@@ -54,7 +54,7 @@ public class Biblioteca {
                 library.reserveBook(0);
                 break;
             case 5:
-                checkUser();
+                library.checkUser();
                 break;
             default:
                 printInvalidOption();
@@ -67,10 +67,8 @@ public class Biblioteca {
         String username = scanner.next();
         outputStream.print("Enter password: ");
         String password = scanner.next();
-        User user = new User(username,password);
-        user.login();
-        loggedInUser = user;
-        outputStream.println("User successfully logged in");
+        String message = library.verifyUser(username, password);
+        outputStream.println(message);
     }
 
     public void printInvalidOption() {
@@ -93,15 +91,6 @@ public class Biblioteca {
             outputStream.println("Only numbers are allowed");
         }
         return -1;
-    }
-
-    public void checkUser() {
-        if (loggedInUser != null){
-            outputStream.println("Hi " + loggedInUser.getUsername() + "!");
-        }
-        else{
-            outputStream.println(GENERIC_USER_MESSAGE);
-        }
     }
 
     public void run() {

@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.internal.matchers.StringContains.containsString;
 
 public class TestLibrary {
     private Library library;
@@ -57,6 +59,23 @@ public class TestLibrary {
 
     @Test
     public void shouldNotReserveBookNotInMenu() throws Exception {
-        assertThat(library.reserveBook(8),is(Biblioteca.RESERVED_UNAVAILABLE_BOOK));
+        assertThat(library.reserveBook(8), is(Biblioteca.RESERVED_UNAVAILABLE_BOOK));
+    }
+
+    @Test
+    public void shouldBeAbleToCheckUserThatHasNotLoggedIn() throws Exception {
+        assertThat(library.checkUser(),is(Biblioteca.GENERIC_USER_MESSAGE));
+    }
+
+    @Test
+    public void shouldBeAbleToCheckUserThatHasLoggedIn() throws Exception {
+        library.verifyUser("111-1112","lola2");
+        assertThat(library.checkUser(), is("Hi 111-1112!"));
+    }
+
+    @Test
+    public void shouldLoggedInUserNotSeeGenericMessage() throws Exception {
+        library.verifyUser("111-1113","lola3");
+        assertThat(library.checkUser(), is(not(containsString(Biblioteca.GENERIC_USER_MESSAGE))));
     }
 }

@@ -56,4 +56,19 @@ public class Library {
             return Biblioteca.RESERVED_UNAVAILABLE_BOOK;
         }
     }
+
+    public String verifyUser(String username, String password) {
+        User user = new User(username,password);
+        user.login();
+        return "User successfully logged in";
+    }
+
+    public String checkUser() {
+        if (Biblioteca.loggedInUser != null){
+            return "Hi " + Biblioteca.loggedInUser.getUsername() + "!";
+        }
+        else{
+            return Biblioteca.GENERIC_USER_MESSAGE;
+        }
+    }
 }

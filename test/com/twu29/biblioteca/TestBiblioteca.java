@@ -80,28 +80,6 @@ public class TestBiblioteca {
         biblioteca.doLogin();
     }
 
-    @Test
-    public void shouldBeAbleToCheckUserThatHasNotLoggedIn() throws Exception {
-        biblioteca.checkUser();
-        assertThat(outStream.toString(),is(formattedOutput(Biblioteca.GENERIC_USER_MESSAGE)));
-    }
-
-    @Test
-    public void shouldBeAbleToCheckUserThatHasLoggedIn() throws Exception {
-        setUp("111-1112 lola2");
-        biblioteca.doLogin();
-        biblioteca.checkUser();
-        assertThat(outStream.toString(), containsString("Hi 111-1112!"));
-    }
-
-    @Test
-    public void shouldLoggedInUserNotSeeGenericMessage() throws Exception {
-        setUp("111-1113 lola3");
-        biblioteca.doLogin();
-        biblioteca.checkUser();
-        assertThat(outStream.toString(), is(not(containsString(Biblioteca.GENERIC_USER_MESSAGE))));
-    }
-
     private String formattedOutput(String output) {
         return output + lineSeparator;
     }
