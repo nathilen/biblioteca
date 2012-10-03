@@ -11,11 +11,15 @@ public class Menu {
         items = new ArrayList<Item>();
         items.add(new Item("List Book Catalog", library.bookCatalogue()));
         items.add(new Item("List Movie Catalog", library.movieCatalogue()));
+        items.add(new Item("Check My Details", library.checkUser()));
     }
 
     public String processItem(int itemNumber) {
-        Item item = items.get(itemNumber - 1);
-        String output = item.deliver();
-        return output;
+
+        if (itemNumber < 0 || itemNumber >= items.size()){
+            return Biblioteca.INVALID_MENU_OPTION;
+        }
+        Item item = items.get(itemNumber);
+        return item.deliver();
     }
 }

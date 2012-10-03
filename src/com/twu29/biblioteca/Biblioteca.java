@@ -10,7 +10,6 @@ public class Biblioteca {
     private PrintStream outputStream;
     private Scanner scanner;
 
-    public static User loggedInUser;
     private Menu menu;
     private Library library;
 
@@ -28,9 +27,8 @@ public class Biblioteca {
     public Biblioteca(PrintStream outputStream, Scanner scanner) {
         this.outputStream = outputStream;
         this.scanner = scanner;
-
         this.library = new Library();
-        this.menu = new Menu(library);
+        prepareMenu();
     }
 
     public void printWelcome() {
@@ -38,41 +36,29 @@ public class Biblioteca {
         outputStream.println();
     }
 
-    public void processMenuSelection(int selection) {
-//        menu.processItem(selection - 1);
+    public void processMenuSelection(String userInput) {
+        int selection = Integer.parseInt(userInput);
+        String message = menu.processItem(selection - 1);
+        printMessage(message);
+
         switch(selection){
             case 1:
                 doLogin();
                 break;
-            case 2:
-                printMessage(library.bookCatalogue());
-                break;
-            case 3:
-                printMessage(library.movieCatalogue());
-                break;
             case 4:
                 library.reserveBook(0);
                 break;
-            case 5:
-                library.checkUser();
-                break;
             default:
-                printInvalidOption();
         }
     }
 
     public void doLogin() {
-
         outputStream.print("Enter username: ");
         String username = scanner.next();
         outputStream.print("Enter password: ");
         String password = scanner.next();
-        String message = library.verifyUser(username, password);
+        String message = library.doLogin(username, password);
         outputStream.println(message);
-    }
-
-    public void printInvalidOption() {
-        outputStream.println(INVALID_MENU_OPTION);
     }
 
     public void printMessage(String message){
@@ -83,26 +69,25 @@ public class Biblioteca {
         outputStream.println(menu());
     }
 
-    public int getUserSelection(){
-        try{
-            return scanner.nextInt();
-        }
-        catch(Exception exception){
-            outputStream.println("Only numbers are allowed");
-        }
-        return -1;
+    public String getUserInput(String message){
+        printMessage(message);
+        return scanner.next();
     }
 
     public void run() {
-        populateMovieCatalogue();
-        populateBookCatalogue();
 
         while(true){
             printWelcome();
             printMenu();
-            int selection = getUserSelection();
-            processMenuSelection(selection);
+            String userInput = getUserInput("Select an option: ");
+            processMenuSelection(userInput);
         }
+    }
+
+    private void prepareMenu() {
+        populateMovieCatalogue();
+        populateBookCatalogue();
+        this.menu = new Menu(library);
     }
 
     private void populateMovieCatalogue() {

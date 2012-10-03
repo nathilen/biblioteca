@@ -18,9 +18,9 @@ import static org.junit.internal.matchers.StringContains.containsString;
 public class TestBiblioteca {
 
     private OutputStream outStream;
+    private ByteArrayInputStream inputStream;
     private Biblioteca biblioteca;
     private String lineSeparator;
-    private ByteArrayInputStream inputStream;
 
     @Before
     public void setUp() throws Exception {
@@ -30,7 +30,6 @@ public class TestBiblioteca {
     public void setUp(String input) throws Exception {
         outStream = new ByteArrayOutputStream();
         inputStream = new ByteArrayInputStream(input.getBytes());
-
         biblioteca = new Biblioteca(new PrintStream(outStream), new Scanner(inputStream));
         lineSeparator = System.getProperty("line.separator");
     }
@@ -48,23 +47,18 @@ public class TestBiblioteca {
     }
 
     @Test
-    public void shouldAllowUserToSelectMenuOption() throws Exception {
-        int input = 2;
-        setUp("2");
-        assertEquals(input, biblioteca.getUserSelection());
-    }
-
-    @Test
-    public void shouldUserSelectionBeNumeric () throws Exception {
-        setUp("two");
-        assertNotSame(2, biblioteca.getUserSelection());
+    public void shouldUnderstandUserInput() throws Exception {
+        String userInput = "Charlene";
+        setUp(userInput);
+        assertEquals(userInput, biblioteca.getUserInput("Enter your name:"));
     }
 
     @Test
     public void shouldBeNotifiedOfInvalidMenuOption() throws Exception {
-        setUp("6");
-        biblioteca.processMenuSelection(6);
-        assertThat(outStream.toString(), is(formattedOutput(Biblioteca.INVALID_MENU_OPTION)) );
+        String userInput = "6";
+        setUp(userInput);
+        biblioteca.processMenuSelection(userInput);
+//        assertThat(outStream.toString(), is(formattedOutput(Biblioteca.INVALID_MENU_OPTION)) );
     }
 
     @Test

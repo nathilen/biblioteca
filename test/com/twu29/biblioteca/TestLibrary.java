@@ -69,13 +69,13 @@ public class TestLibrary {
 
     @Test
     public void shouldBeAbleToCheckUserThatHasLoggedIn() throws Exception {
-        library.verifyUser("111-1112","lola2");
+        library.doLogin("111-1112", "lola2");
         assertThat(library.checkUser(), is("Hi 111-1112!"));
     }
 
     @Test
     public void shouldLoggedInUserNotSeeGenericMessage() throws Exception {
-        library.verifyUser("111-1113","lola3");
+        library.doLogin("111-1113", "lola3");
         assertThat(library.checkUser(), is(not(containsString(Biblioteca.GENERIC_USER_MESSAGE))));
     }
 }

@@ -63,12 +63,12 @@ public class User {
         final int DASH_POSITION = 3;
         String prefix = username.substring(0,DASH_POSITION);
         String suffix = username.substring(DASH_POSITION + 1);
-        return  username.length() == USERNAME_LENGTH && isDigit(prefix) &&
-                username.indexOf("-") == DASH_POSITION && isDigit(suffix);
+        return  username.length() == USERNAME_LENGTH && hasDigitsOnly(prefix) &&
+                username.indexOf("-") == DASH_POSITION && hasDigitsOnly(suffix);
 
     }
 
-    private boolean isDigit(String content) {
+    private boolean hasDigitsOnly(String content) {
         for (int index = 0; index < content.length(); index++){
             Character character = content.charAt(index);
             if (!Character.isDigit(character)){

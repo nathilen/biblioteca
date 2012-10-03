@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 public class Library {
 
+    private User loggedInUser;
     private Hashtable<Integer, Movie> movies;
     private static Hashtable<Integer,Book> books;
 
@@ -12,7 +13,7 @@ public class Library {
         movies = new Hashtable<Integer, Movie>();
     }
 
-    public void addBook(int bookNumber, Book book){
+    public void addBook(int bookNumber, Book book) {
         books.put(bookNumber, book);
     }
 
@@ -22,9 +23,8 @@ public class Library {
 
     public String bookCatalogue(){
         String bookMenu = "\n\nOur Books\n------------\n";
-        int bookNumber = 0;
-        for (Book book: books.values()){
-            bookMenu += ++bookNumber + ". " + books.get(bookNumber)+ "\n";
+        for (int bookNumber = 0; bookNumber < books.size(); bookNumber++){
+            bookMenu += (bookNumber + 1) + ". " + books.get(bookNumber)+ "\n";
         }
         return bookMenu;
     }
@@ -57,15 +57,16 @@ public class Library {
         }
     }
 
-    public String verifyUser(String username, String password) {
+    public String doLogin(String username, String password) {
         User user = new User(username,password);
         user.login();
+        loggedInUser = user;
         return "User successfully logged in";
     }
 
     public String checkUser() {
-        if (Biblioteca.loggedInUser != null){
-            return "Hi " + Biblioteca.loggedInUser.getUsername() + "!";
+        if (loggedInUser != null){
+            return "Hi " + loggedInUser.getUsername() + "!";
         }
         else{
             return Biblioteca.GENERIC_USER_MESSAGE;
