@@ -13,15 +13,12 @@ public class Biblioteca {
     private Menu menu;
     private Library library;
 
-    static final String INVALID_MENU_OPTION = "Select a valid option!!!";
     static final String WELCOME =  "----------------------------------------------------\n" +
                                    "|  Welcome To The Bangalore Public Library System   |\n"+
                                    "----------------------------------------------------";
     static final String MENU_OPTIONS [] = {"Login","List Book Catalog","List Movie Catalog","Check Out Book","Check My Details","Exit"};
-    static final String MENU = menu();
     static final String RESERVED_AVAILABLE_BOOK = "Thank You! Enjoy the book.";
     static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.";
-    static final String GENERIC_USER_MESSAGE = "Please talk to Librarian. Thank you.";
 
 
     public Biblioteca(PrintStream outputStream, Scanner scanner) {
@@ -65,10 +62,6 @@ public class Biblioteca {
         outputStream.println(message);
     }
 
-    public void printMenu() {
-        outputStream.println(menu());
-    }
-
     public String getUserInput(String message){
         printMessage(message);
         return scanner.next();
@@ -76,9 +69,9 @@ public class Biblioteca {
 
     public void run() {
 
+        String content = menuContent();
         while(true){
-            printWelcome();
-            printMenu();
+            printMessage(content);
             String userInput = getUserInput("Select an option: ");
             processMenuSelection(userInput);
         }
@@ -121,14 +114,13 @@ public class Biblioteca {
         library.addBook(4, new Book("Lessons of Here", "Anonymous Famous", false));
     }
 
-    private static String menu(){
-        String menu = "Menu\n================\n";
-        int optionNumber;
-        for(optionNumber = 1; optionNumber <= MENU_OPTIONS.length; optionNumber++){
-            menu += optionNumber + ". " + MENU_OPTIONS[optionNumber - 1] + "\n";
+    public String menuContent(){
+        String content = WELCOME + "\nMenu\n================\n";
+        String[] options = menu.menuOptions();
+        for(int number = 1; number <= options.length; number++){
+            content += number + ". " + options[number - 1] + "\n";
         }
-        menu += "Select an option: ";
-        return menu;
+        return content;
     }
 
     public static void main(String[] args) {

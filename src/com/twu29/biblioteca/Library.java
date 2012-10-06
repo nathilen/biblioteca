@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 public class Library {
 
+    static final String GENERIC_USER_MESSAGE = "Please talk to Librarian. Thank you.";
     private User loggedInUser;
     private Hashtable<Integer, Movie> movies;
     private static Hashtable<Integer,Book> books;
@@ -69,7 +70,7 @@ public class Library {
             return "Hi " + loggedInUser.getUsername() + "!";
         }
         else{
-            return Biblioteca.GENERIC_USER_MESSAGE;
+            return GENERIC_USER_MESSAGE;
         }
     }
 }

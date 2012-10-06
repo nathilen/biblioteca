@@ -64,7 +64,7 @@ public class TestLibrary {
 
     @Test
     public void shouldBeAbleToCheckUserThatHasNotLoggedIn() throws Exception {
-        assertThat(library.checkUser(),is(Biblioteca.GENERIC_USER_MESSAGE));
+        assertThat(library.checkUser(),is(Library.GENERIC_USER_MESSAGE));
     }
 
     @Test
@@ -76,6 +76,6 @@ public class TestLibrary {
     @Test
     public void shouldLoggedInUserNotSeeGenericMessage() throws Exception {
         library.doLogin("111-1113", "lola3");
-        assertThat(library.checkUser(), is(not(containsString(Biblioteca.GENERIC_USER_MESSAGE))));
+        assertThat(library.checkUser(), is(not(containsString(Library.GENERIC_USER_MESSAGE))));
     }
 }

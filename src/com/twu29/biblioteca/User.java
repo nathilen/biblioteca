@@ -61,10 +61,13 @@ public class User {
     private boolean isUsernameValid(String username){
         final int USERNAME_LENGTH = 8;
         final int DASH_POSITION = 3;
+
+        if (username.length() < USERNAME_LENGTH){
+            return false;
+        }
         String prefix = username.substring(0,DASH_POSITION);
         String suffix = username.substring(DASH_POSITION + 1);
-        return  username.length() == USERNAME_LENGTH && hasDigitsOnly(prefix) &&
-                username.indexOf("-") == DASH_POSITION && hasDigitsOnly(suffix);
+        return hasDigitsOnly(prefix) && username.indexOf("-") == DASH_POSITION && hasDigitsOnly(suffix);
 
     }
 

@@ -10,8 +10,8 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.internal.matchers.StringContains.containsString;
 
 
@@ -35,15 +35,10 @@ public class TestBiblioteca {
     }
 
     @Test
-    public void shouldPrintWelcome() throws Exception {
-        biblioteca.printWelcome();
-        assertThat(outStream.toString(), is(formattedOutput(Biblioteca.WELCOME + "\n")));
-    }
-
-    @Test
-    public void shouldPrintMenu() throws Exception {
-        biblioteca.printMenu();
-        assertThat(outStream.toString(), is(formattedOutput(Biblioteca.MENU)));
+    public void shouldUnderstandMessagePrinting() throws Exception {
+        String message = "Hello World/n, How is life?";
+        biblioteca.printMessage(message);
+        assertThat(outStream.toString(), is(formattedOutput(message)));
     }
 
     @Test
@@ -54,11 +49,18 @@ public class TestBiblioteca {
     }
 
     @Test
+    public void shouldHaveMenuContent() throws Exception {
+        String content = Biblioteca.WELCOME + "\nMenu\n================\n1. List Book Catalog" +
+                        "\n2. List Movie Catalog\n3. Check My Details\n";
+        assertThat(biblioteca.menuContent(), is(content));
+    }
+
+    @Test
     public void shouldBeNotifiedOfInvalidMenuOption() throws Exception {
         String userInput = "6";
         setUp(userInput);
         biblioteca.processMenuSelection(userInput);
-//        assertThat(outStream.toString(), is(formattedOutput(Biblioteca.INVALID_MENU_OPTION)) );
+//        assertThat(outStream.toString(), is(formattedOutput(Menu.INVALID_MENU_OPTION)) );
     }
 
     @Test
