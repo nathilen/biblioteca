@@ -12,11 +12,19 @@ public class TestMenu {
 
     @Before
     public void setUp() throws Exception {
-        menu = new Menu(new Library());
+        menu = new Menu();
+    }
+
+    @Test
+    public void shouldAddMenuItem() throws Exception {
+        String text = "My Name";
+        String message = "Charlene";
+        menu.add(new Item(text, message));
+        assertThat(menu.processItem(0), is (message));
     }
 
     @Test
     public void shouldBeNotifiedOfInvalidMenuOption() throws Exception {
-        assertThat(menu.processItem(10), is(Menu.INVALID_MENU_OPTION));
+        assertThat(menu.processItem(-1), is(Menu.INVALID_MENU_OPTION));
     }
 }

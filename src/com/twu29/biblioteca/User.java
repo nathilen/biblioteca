@@ -10,17 +10,14 @@ public class User {
 
     private Authentication authentication;
 
-    public User(String username, String password) {
-        if (!isUsernameValid(username)){
-            throw (new LibraryException("Username is not in valid format"));
-        }
+    public User(String username, String password){
         this.username = username;
         this.password = password;
 
         authentication = new Authentication();
     }
 
-    public void login() {
+    public void login() throws LibraryException {
         if (isLoggedIn){
             throw new LibraryException("User has already logged in");
         }
@@ -28,10 +25,6 @@ public class User {
             throw new LibraryException("Username or password is incorrect");
         }
         isLoggedIn = true;
-    }
-
-    public void logout(){
-        isLoggedIn = false;
     }
 
     public String getUsername() {
@@ -56,28 +49,5 @@ public class User {
     @Override
     public int hashCode() {
         return username.hashCode() + password.hashCode();
-    }
-
-    private boolean isUsernameValid(String username){
-        final int USERNAME_LENGTH = 8;
-        final int DASH_POSITION = 3;
-
-        if (username.length() < USERNAME_LENGTH){
-            return false;
-        }
-        String prefix = username.substring(0,DASH_POSITION);
-        String suffix = username.substring(DASH_POSITION + 1);
-        return hasDigitsOnly(prefix) && username.indexOf("-") == DASH_POSITION && hasDigitsOnly(suffix);
-
-    }
-
-    private boolean hasDigitsOnly(String content) {
-        for (int index = 0; index < content.length(); index++){
-            Character character = content.charAt(index);
-            if (!Character.isDigit(character)){
-                return false;
-            }
-        }
-        return true;
     }
 }

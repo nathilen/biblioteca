@@ -7,17 +7,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 public class TestUser {
-    @Test(expected = LibraryException.class)
-    public void shouldValidateUsername() throws Exception {
-        new User("chacha","here101");
-        fail("Should not create user");
-    }
-
-    @Test
-    public void shouldCreateValidUser() throws Exception {
-        new User("111-1113","lola2");
-    }
-
     @Test
     public void shouldUnderstandUserEquality() throws Exception {
         String username = "111-1114";

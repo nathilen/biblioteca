@@ -14,23 +14,35 @@ public class TestLibrary {
     @Before
     public void setUp() throws Exception {
         library = new Library();
-        library.addBook(1, new Book("Test Driven Development By Example", "Kent Beck", false));
-        library.addBook(2, new Book("How To Dance 101", "Anonymous Famous", false));
+        library.addBook(new Book("Test Driven Development By Example", "Kent Beck"));
+        library.addBook(new Book("How To Dance 101", "Anonymous Famous"));
+    }
+
+
+    @Test
+    public void shouldPerformLogin() throws Exception {
+        assertThat(library.doLogin("111-1111", "lola1"), is("User successfully logged in"));
+    }
+
+    @Test(expected = LibraryException.class)
+    public void shouldNotAllowInvalidUserToLogin() throws Exception {
+        library.doLogin("111-1111", "lola2");
+
     }
 
     @Test
     public void shouldSeeAllBooks() throws Exception {
         String bookMenu = "\n\nOur Books\n------------\n" +
                 "1. Test Driven Development By Example by Kent Beck\n" +
-                "2. How To Dance 101 by Anonymous Famous";
+                "2. How To Dance 101 by Anonymous Famous\n";
         assertThat(library.bookCatalogue(), is(bookMenu));
     }
 
     @Test
     public void shouldSeeAllMovies() throws Exception {
 
-        library.addMovie(1, new Movie("Scholay", 2012, "Ramesh Sippy"));
-        library.addMovie(2, new Movie("La Maison", 2011, "Krystel Elembe"));
+        library.addMovie(new Movie("Scholay", 2012, "Ramesh Sippy"));
+        library.addMovie(new Movie("La Maison", 2011, "Krystel Elembe"));
 
         String lineFormat = "%-20s%-10d%-20s%-3s\n";
         String headerFormat = "\n\n%s\n%s\n%-20s%-10s%-20s%-3s\n\n";
@@ -44,13 +56,13 @@ public class TestLibrary {
 
     @Test
     public void shouldReserveAvailableBook() throws Exception {
-        assertThat(library.reserveBook(1),is(Biblioteca.RESERVED_AVAILABLE_BOOK));
+        assertThat(library.reserveBook(1),is(Library.RESERVED_AVAILABLE_BOOK));
     }
 
     @Test
     public void shouldNotReserveUnavailableBook() throws Exception {
-        String bookAvailableText = Biblioteca.RESERVED_AVAILABLE_BOOK;
-        String bookUnavailableText = Biblioteca.RESERVED_UNAVAILABLE_BOOK;
+        String bookAvailableText = Library.RESERVED_AVAILABLE_BOOK;
+        String bookUnavailableText = Library.RESERVED_UNAVAILABLE_BOOK;
 
         String message = library.reserveBook(2);
         message += library.reserveBook(2);
@@ -59,23 +71,23 @@ public class TestLibrary {
 
     @Test
     public void shouldNotReserveBookNotInMenu() throws Exception {
-        assertThat(library.reserveBook(8), is(Biblioteca.RESERVED_UNAVAILABLE_BOOK));
+        assertThat(library.reserveBook(8), is(Library.RESERVED_UNAVAILABLE_BOOK));
     }
 
     @Test
     public void shouldBeAbleToCheckUserThatHasNotLoggedIn() throws Exception {
-        assertThat(library.checkUser(),is(Library.GENERIC_USER_MESSAGE));
+        assertThat(library.userDetails(),is(Library.GENERIC_USER_MESSAGE));
     }
 
     @Test
     public void shouldBeAbleToCheckUserThatHasLoggedIn() throws Exception {
         library.doLogin("111-1112", "lola2");
-        assertThat(library.checkUser(), is("Hi 111-1112!"));
+        assertThat(library.userDetails(), is("Hi 111-1112!"));
     }
 
     @Test
     public void shouldLoggedInUserNotSeeGenericMessage() throws Exception {
         library.doLogin("111-1113", "lola3");
-        assertThat(library.checkUser(), is(not(containsString(Library.GENERIC_USER_MESSAGE))));
+        assertThat(library.userDetails(), is(not(containsString(Library.GENERIC_USER_MESSAGE))));
     }
 }

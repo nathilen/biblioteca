@@ -14,11 +14,11 @@ public class Biblioteca {
     private Library library;
 
     static final String WELCOME =  "----------------------------------------------------\n" +
-                                   "|  Welcome To The Bangalore Public Library System   |\n"+
-                                   "----------------------------------------------------";
-    static final String MENU_OPTIONS [] = {"Login","List Book Catalog","List Movie Catalog","Check Out Book","Check My Details","Exit"};
-    static final String RESERVED_AVAILABLE_BOOK = "Thank You! Enjoy the book.";
-    static final String RESERVED_UNAVAILABLE_BOOK = "Sorry we don't have that book yet.";
+            "|  Welcome To The Bangalore Public Library System   |\n"+
+            "----------------------------------------------------";
+    private static final String MENU_OPTIONS [] = {"Login","List Book Catalog","List Movie Catalog","Check Out Book","Check My Details","Exit"};
+    private static final String GOODBYE_MESSAGE = "Thank you for using Biblioteca. See you next time";
+
 
 
     public Biblioteca(PrintStream outputStream, Scanner scanner) {
@@ -26,36 +26,6 @@ public class Biblioteca {
         this.scanner = scanner;
         this.library = new Library();
         prepareMenu();
-    }
-
-    public void printWelcome() {
-        outputStream.println(WELCOME);
-        outputStream.println();
-    }
-
-    public void processMenuSelection(String userInput) {
-        int selection = Integer.parseInt(userInput);
-        String message = menu.processItem(selection - 1);
-        printMessage(message);
-
-        switch(selection){
-            case 1:
-                doLogin();
-                break;
-            case 4:
-                library.reserveBook(0);
-                break;
-            default:
-        }
-    }
-
-    public void doLogin() {
-        outputStream.print("Enter username: ");
-        String username = scanner.next();
-        outputStream.print("Enter password: ");
-        String password = scanner.next();
-        String message = library.doLogin(username, password);
-        outputStream.println(message);
     }
 
     public void printMessage(String message){
@@ -67,20 +37,32 @@ public class Biblioteca {
         return scanner.next();
     }
 
-    public void run() {
-
-        String content = menuContent();
-        while(true){
-            printMessage(content);
-            String userInput = getUserInput("Select an option: ");
-            processMenuSelection(userInput);
+    public String reserveBook() {
+        if (library.hasLoggedInUser()) {
+            String userInput = getUserInput("Enter the book number: ");
+            int bookNumber = Integer.parseInt(userInput) - 1;
+            return library.reserveBook(bookNumber);
         }
+        else {
+            return "You must first login to check out a book";
+        }
+    }
+
+    public Library getLibrary() {
+        return library;
     }
 
     private void prepareMenu() {
         populateMovieCatalogue();
         populateBookCatalogue();
-        this.menu = new Menu(library);
+
+        this.menu = new Menu();
+        menu.add(new LoginItem(MENU_OPTIONS[0], this));
+        menu.add(new Item(MENU_OPTIONS[1], library.bookCatalogue()));
+        menu.add(new Item(MENU_OPTIONS[2], library.movieCatalogue()));
+        menu.add(new ReservationItem(MENU_OPTIONS[3], this));
+        menu.add(new UserItem(MENU_OPTIONS[4], this));
+        menu.add(new Item(MENU_OPTIONS[5], GOODBYE_MESSAGE));
     }
 
     private void populateMovieCatalogue() {
@@ -91,13 +73,12 @@ public class Biblioteca {
         String movieLine;
         try{
             BufferedReader reader = new BufferedReader(new FileReader(MOVIE_FILENAME));
-            int movieNumber = 0;
             while ((movieLine = reader.readLine()) != null){
                 String movieFields [] = movieLine.split(";");
                 String title = movieFields[0];
                 int year = Integer.parseInt(movieFields[1]);
                 String director = movieFields[2];
-                library.addMovie(++movieNumber, new Movie(title, year, director));
+                library.addMovie(new Movie(title, year, director));
             }
             reader.close();
         }
@@ -108,23 +89,41 @@ public class Biblioteca {
     }
 
     private void populateBookCatalogue() {
-        library.addBook(1, new Book("Test Driven Development By Example", "Kent Beck", false));
-        library.addBook(2, new Book("Floyd Electronic", "Floyd", false));
-        library.addBook(3, new Book("How To Dance 101", "Anonymous Famous", false));
-        library.addBook(4, new Book("Lessons of Here", "Anonymous Famous", false));
+        library.addBook(new Book("Test Driven Development By Example", "Kent Beck"));
+        library.addBook(new Book("Floyd Electronic", "Floyd"));
+        library.addBook(new Book("How To Dance 101", "Anonymous Famous"));
+        library.addBook(new Book("Lessons of Here", "Anonymous Famous"));
+    }
+
+    private void processMenuSelection(String userInput) {
+        int selection = Integer.parseInt(userInput);
+        String message = menu.processItem(selection - 1);
+        printMessage(message);
     }
 
     public String menuContent(){
         String content = WELCOME + "\nMenu\n================\n";
-        String[] options = menu.menuOptions();
-        for(int number = 1; number <= options.length; number++){
-            content += number + ". " + options[number - 1] + "\n";
+        for(int number = 1; number <= MENU_OPTIONS.length; number++){
+            content += number + ". " + MENU_OPTIONS[number - 1] + "\n";
         }
         return content;
     }
 
+    public void run() {
+        String content = menuContent();
+        while(true){
+            printMessage(content);
+            String userInput = getUserInput("Select an option: ");
+            processMenuSelection(userInput);
+
+            if (userInput.equals("6")){
+                break;
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        Scanner inputScanner = new Scanner(System.in);
-        new Biblioteca(System.out, inputScanner).run();
+        Biblioteca biblioteca = new Biblioteca(System.out, new Scanner(System.in));
+        biblioteca.run();
     }
 }

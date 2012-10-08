@@ -8,17 +8,30 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public class TestLoginItem {
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
-    private OutputStream outStream;
-    private ByteArrayInputStream inputStream;
+public class TestLoginItem {
+    private LoginItem loginItem;
+
+    public void setUp(String input) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        Biblioteca biblioteca = new Biblioteca(new PrintStream(outputStream), new Scanner(inputStream));
+
+        loginItem = new LoginItem("Login", biblioteca);
+    }
 
     @Test
-    public void shouldUnderstandUserLogin() throws Exception {
-        String loginDetails = "111-1112 lola2";
-        outStream = new ByteArrayOutputStream();
-        inputStream = new ByteArrayInputStream(loginDetails.getBytes());
-//        LoginItem loginItem = new LoginItem("Login", new PrintStream(outStream), new Scanner(inputStream));
-//        loginItem.deliver();
+    public void shouldUnderstandValidUserLogin() throws Exception {
+        setUp("111-1112 lola2");
+        assertThat(loginItem.deliver(), is("User successfully logged in"));
+    }
+
+    @Test
+    public void shouldUnderstandInvalidUserLogin() throws Exception {
+        setUp("111-1113 lola2");
+        assertThat(loginItem.deliver(), is(not("User successfully logged in")));
     }
 }

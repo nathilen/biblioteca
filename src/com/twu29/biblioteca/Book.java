@@ -5,19 +5,19 @@ public class Book {
     private String author;
     private boolean reserved;
 
-    public Book(String title, String author, boolean reserved){
+    public Book(String title, String author){
         this.title = title;
         this.author = author;
-        this.reserved = reserved;
     }
 
-    public boolean isReserved() {
-        return reserved;
+    public boolean reserve() {
+        if (!reserved){
+            reserved = true;
+            return reserved;
+        }
+        return false;
     }
 
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
-    }
 
     @Override
     public String toString(){

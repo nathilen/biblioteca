@@ -50,31 +50,11 @@ public class TestBiblioteca {
 
     @Test
     public void shouldHaveMenuContent() throws Exception {
-        String content = Biblioteca.WELCOME + "\nMenu\n================\n1. List Book Catalog" +
-                        "\n2. List Movie Catalog\n3. Check My Details\n";
+        String content = Biblioteca.WELCOME + "\nMenu\n================\n1. Login\n2. List Book Catalog\n" +
+                        "3. List Movie Catalog\n4. Check Out Book\n5. Check My Details\n6. Exit\n";
         assertThat(biblioteca.menuContent(), is(content));
     }
 
-    @Test
-    public void shouldBeNotifiedOfInvalidMenuOption() throws Exception {
-        String userInput = "6";
-        setUp(userInput);
-        biblioteca.processMenuSelection(userInput);
-//        assertThat(outStream.toString(), is(formattedOutput(Menu.INVALID_MENU_OPTION)) );
-    }
-
-    @Test
-    public void shouldPerformLogin() throws Exception {
-        setUp("111-1111 lola1");
-        biblioteca.doLogin();
-        assertThat(outStream.toString(), containsString("User successfully logged in"));
-    }
-
-    @Test(expected = LibraryException.class)
-    public void shouldNotAllowInvalidUserToLogin() throws Exception {
-        setUp("111-1111 lola2");
-        biblioteca.doLogin();
-    }
 
     private String formattedOutput(String output) {
         return output + lineSeparator;

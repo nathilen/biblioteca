@@ -7,13 +7,13 @@ public class Menu {
 
     static final String INVALID_MENU_OPTION = "Select a valid option!!!";
     private List<Item> items;
-    private final String [] MENU_OPTIONS = {"List Book Catalog", "List Movie Catalog", "Check My Details"};
 
-    public Menu(Library library) {
+    public Menu() {
         items = new ArrayList<Item>();
-        items.add(new Item(MENU_OPTIONS[0], library.bookCatalogue()));
-        items.add(new Item(MENU_OPTIONS[1], library.movieCatalogue()));
-        items.add(new Item(MENU_OPTIONS[2], library.checkUser()));
+    }
+
+    public void add(Item item) {
+        items.add(item);
     }
 
     public String processItem(int itemNumber) {
@@ -25,7 +25,4 @@ public class Menu {
         return item.deliver();
     }
 
-    public String [] menuOptions() {
-        return MENU_OPTIONS;
-    }
 }
