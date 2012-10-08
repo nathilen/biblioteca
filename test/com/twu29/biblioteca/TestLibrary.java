@@ -24,10 +24,9 @@ public class TestLibrary {
         assertThat(library.doLogin("111-1111", "lola1"), is("User successfully logged in"));
     }
 
-    @Test(expected = LibraryException.class)
+    @Test
     public void shouldNotAllowInvalidUserToLogin() throws Exception {
-        library.doLogin("111-1111", "lola2");
-
+        assertThat(library.doLogin("111-1111", "lola2"), is("Username or password is incorrect"));
     }
 
     @Test
@@ -56,7 +55,7 @@ public class TestLibrary {
 
     @Test
     public void shouldReserveAvailableBook() throws Exception {
-        assertThat(library.reserveBook(1),is(Library.RESERVED_AVAILABLE_BOOK));
+        assertThat(library.reserveBook(0),is(Library.RESERVED_AVAILABLE_BOOK));
     }
 
     @Test
@@ -64,8 +63,8 @@ public class TestLibrary {
         String bookAvailableText = Library.RESERVED_AVAILABLE_BOOK;
         String bookUnavailableText = Library.RESERVED_UNAVAILABLE_BOOK;
 
-        String message = library.reserveBook(2);
-        message += library.reserveBook(2);
+        String message = library.reserveBook(1);
+        message += library.reserveBook(1);
         assertThat(message,is(bookAvailableText + bookUnavailableText));
     }
 

@@ -5,8 +5,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TestUser.class, TestMovie.class, TestBiblioteca.class,
-                     TestMenu.class, TestItem.class, TestLoginItem.class, TestLibrary.class})
+@Suite.SuiteClasses({TestUser.class, TestMovie.class, TestBiblioteca.class, TestAuthentication.class,
+                     TestMenu.class, TestItem.class, TestLoginItem.class, TestLibrary.class,
+                     TestUserItem.class})
 public class AllTests {
     public static void main(String[] args) {
         junit.textui.TestRunner.run(mySuite());
